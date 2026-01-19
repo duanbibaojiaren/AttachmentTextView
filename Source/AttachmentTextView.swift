@@ -11,17 +11,24 @@ open class AttachmentTextView: UITextView {
 
     public override init(frame: CGRect, textContainer: NSTextContainer?) {
         super.init(frame: frame, textContainer: textContainer)
-        self.commonInit()
     }
 
     public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        self.commonInit()
     }
 
     private let attachmentBehavior = AttachmentTextViewBehavior()
+    private var didBindBehavior = false
 
-    private func commonInit() {
+    open override func didMoveToSuperview() {
+        super.didMoveToSuperview()
+        guard superview != nil else { return }
+        guard !didBindBehavior else { return }
+        didBindBehavior = true
+        bindBehavior()
+    }
+
+    private func bindBehavior() {
         self.attachmentBehavior.textView = self
         self.layoutManager.delegate = self.attachmentBehavior
         self.textStorage.delegate = self.attachmentBehavior
